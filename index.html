@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  
+  <div id = "main-ui">
+    <h1>TiC tAc ToE</h1>
+    <h2>by 2598Nitz <a href = "https://github.com/2598Nitz/tic-tac-toe">repo here</a></h2>
+    <div>
+      <button class = "restart">RESTART</button>
+    </div>
+    
+    <div id = "board">
+      <div data-index = "0"></div>
+      <div data-index = "1"></div>
+      <div data-index = "2"></div>
+      <div data-index = "3"></div>
+      <div data-index = "4"></div>
+      <div data-index = "5"></div>
+      <div data-index = "6"></div>
+      <div data-index = "7"></div>
+      <div data-index = "8"></div>
+    </div>
+    <div id = "display-turn">
+
+    </div>
+  </div>
+  
+  <div id="gameModeModal">
+    <!-- Modal content -->
+    <div id="modal-start">
+      <span class="close">&times;</span>
+      <h3> Select the Game Mode</h3>
+      <div>
+        <button id = "users">Two Player Mode</button>
+      </div>
+      <div>
+        <button id = "user">Single Player Mode</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="multiPlayerModal">
+    <!-- Modal content -->
+    <div id="modal-start">
+      <span class="close">&times;</span>
+      <h3>ENTER PLAYER NAMES</h3>
+      
+      <div>
+        <div class = "label-div">
+          <label for="p1">Player 1:</label>
+        </div>
+        <div class = "input-div">
+          <input type="text" id = "p1">
+        </div>
+      </div>
+
+      <div>
+        <div class = "label-div">
+          <label for="p2">Player 2:</label>
+        </div>
+        <div class = "input-div">
+          <input type="text" id = "p2">
+        </div>
+      </div>
+      <div>
+        <button id = "submit-names">Let's Go!</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="endModal">
+    <!-- Modal content -->
+    <div id="modal-start">
+      <span class="close">&times;</span>
+      <h3 id = "end-display"></h3>
+      <div>
+        <button class = "end-restart">RESTART</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js" async defer></script>
+</body>
+</html>
