@@ -3,14 +3,14 @@ const players = (nameVar) =>{
     let name = nameVar;
     const displayTurn = () =>{
         let turnDiv = document.querySelector("#display-turn");
-        turnDiv.innerHTML = `${name}'s turn`;
+        turnDiv.innerHTML = `${obj.name}'s turn`;
     }
-
-    return {name,displayTurn};
+    let obj = {name,displayTurn};
+    return obj;
 };
 
-let playerOne = players("player1");
-let playerTwo = players("player2");
+let playerOne = players("p1");
+let playerTwo = players("p2");
 
 const gameBoard = (()=>{
 
@@ -79,7 +79,9 @@ const gameBoard = (()=>{
             let grid = document.querySelector("div[data-index='"+i+"']");
             grid.innerHTML = "";
             grid.style.backgroundColor = "white";
+            grid.removeEventListener('click',markOnBoard);
         }
+
         playerOneTurn = false;
         let displayDiv = document.querySelector('#display-turn');
         displayDiv.innerHTML = "";
@@ -111,11 +113,17 @@ const gameBoard = (()=>{
             }
         }
 
+        for(let i = 0; i < states.length; i++)
+        {
+            let grid = document.querySelector("div[data-index='"+i+"']");
+            grid.removeEventListener('click',markOnBoard);
+        }
+        
         window.setTimeout(handelModals,800);
 
 
         let endDisplay = document.querySelector("#end-display");
-        endDisplay.innerHTML = `Congrats ${winner},you won the match!!!`;
+        endDisplay.innerHTML = `Congrats ${winner}, you won the match!!!`;
 
         let endRestartBtn = document.querySelector('.end-restart');
         endRestartBtn.addEventListener('click',resetEverything);
@@ -236,8 +244,18 @@ const gameControl = (() => {
 
             let multiPlayerModal = document.querySelector("#multiPlayerModal");
             multiPlayerModal.style.display = "block";
-        })
+        });
+        /*
+        let singlePlayerBtn = document.querySelector('#user');
+        singlePlayerBtn.addEventListener('click',(e) =>{
 
+            let gameModeModal = document.querySelector("#gameModeModal");
+            gameModeModal.style.display = "none";
+
+            let singlePlayerModal = document.querySelector("#singlePlayerModal");
+            singlePlayerModal.style.display = "block";
+        });
+        */
         let startGameBtn = document.querySelector("#submit-names");
 
         startGameBtn.addEventListener('click',(e) =>{
@@ -260,8 +278,8 @@ const gameControl = (() => {
             }
             
 
-            playerOne = players(p1Name);
-            playerTwo = players(p2Name);
+            playerOne.name = p1Name;
+            playerTwo.name = p2Name;
 
             let multiPlayerModal = document.querySelector("#multiPlayerModal");
             multiPlayerModal.style.display = "none";
@@ -269,7 +287,32 @@ const gameControl = (() => {
             let listenToClick = true;
             
             gameBoard.renderUI(listenToClick,true);
-        })
+        });
+        /*
+        let startGameBtn2 = document.querySelector("#submit-name");
+
+        startGameBtn2.addEventListener('click',(e) =>{
+
+            let p1Div = document.querySelector("#sp1");
+            let p1Name = p1Div.value;
+
+            if(p1Div.value === "")
+            {
+                p1Name = "";
+            }
+            
+
+            playerOne.name = p1Name;
+            playerTwo.name = p2Name;
+
+            let multiPlayerModal = document.querySelector("#multiPlayerModal");
+            multiPlayerModal.style.display = "none";
+            
+            let listenToClick = true;
+            
+            gameBoard.renderUI(listenToClick,true);
+        });
+        */
     }
 
     return {gameMode};
