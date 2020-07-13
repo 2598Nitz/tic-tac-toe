@@ -4,7 +4,6 @@ const players = (nameVar) =>{
     const displayTurn = () =>{
         let turnDiv = document.querySelector("#display-turn");
         turnDiv.innerHTML = `${name}'s turn`;
-        console.log(turnDiv);
     }
 
     return {name,displayTurn};
@@ -65,6 +64,13 @@ const gameBoard = (()=>{
         return result;
     }
 
+    function handelModals()
+    {
+        let endModal = document.querySelector("#endModal");
+        endModal.style.display = "block";
+
+    }
+
     function resetEverything(e)
     {
         states = [' ',' ',' ',' ',' ',' ',' ',' ',' '];
@@ -105,12 +111,11 @@ const gameBoard = (()=>{
             }
         }
 
+        window.setTimeout(handelModals,800);
 
-        let endModal = document.querySelector("#endModal");
-        endModal.style.display = "block";
 
         let endDisplay = document.querySelector("#end-display");
-        endDisplay.innerHTML = `Congrats ${winner} !!!`;
+        endDisplay.innerHTML = `Congrats ${winner},you won the match!!!`;
 
         let endRestartBtn = document.querySelector('.end-restart');
         endRestartBtn.addEventListener('click',resetEverything);
@@ -124,11 +129,13 @@ const gameBoard = (()=>{
             grid.innerHTML = states[i];
         }
 
-        let endModal = document.querySelector("#endModal");
-        endModal.style.display = "block";
+        window.setTimeout(handelModals,800);
 
         let endDisplay = document.querySelector("#end-display");
-        endDisplay.innerHTML = `Match resulted in a draw`;
+        endDisplay.innerHTML = 
+        `What a close match!!! 
+        <br>
+        It ended in a draw`;
 
         let endRestartBtn = document.querySelector('.end-restart');
         endRestartBtn.addEventListener('click',resetEverything);
@@ -197,10 +204,14 @@ const gameBoard = (()=>{
         if(playerOneTurn)
         {
             playerOne.displayTurn();
+            let turnDiv = document.querySelector("#display-turn");
+            turnDiv.style.color = `red`;
         }
         else
         {
             playerTwo.displayTurn();
+            let turnDiv = document.querySelector("#display-turn");
+            turnDiv.style.color = `blue`;
         }
         
     };
@@ -252,8 +263,6 @@ const gameControl = (() => {
             playerOne = players(p1Name);
             playerTwo = players(p2Name);
 
-            
-            playerTwo.displayTurn();
             let multiPlayerModal = document.querySelector("#multiPlayerModal");
             multiPlayerModal.style.display = "none";
             
@@ -269,7 +278,41 @@ const gameControl = (() => {
 
 gameControl.gameMode();
 
+function closeModalsOutsideClick(e)
+{   
+    let multiPlayerModal = document.querySelector('#multiPlayerModal');
+    if(e.target === multiPlayerModal)
+    multiPlayerModal.style.display = "none";
 
+    let gameModeModal = document.querySelector('#gameModeModal');
 
+    if(e.target === gameModeModal)
+    gameModeModal.style.display = "none";
 
+    let endModal = document.querySelector('#endModal');
+
+    if(e.target === endModal)
+    endModal.style.display = "none";
+}
+
+function closeModalsCloseClick()
+{   
+    let multiPlayerModal = document.querySelector('#multiPlayerModal');
+    multiPlayerModal.style.display = "none";
+
+    let gameModeModal = document.querySelector('#gameModeModal');
+    gameModeModal.style.display = "none";
+
+    let endModal = document.querySelector('#endModal');
+    endModal.style.display = "none";
+}
+
+window.addEventListener('click',closeModalsOutsideClick);
+let closeBtns = document.querySelectorAll('.close');
+
+closeBtns.forEach(
+    closeBtn => {
+        closeBtn.addEventListener('click',closeModalsCloseClick);
+    }
+)
 
