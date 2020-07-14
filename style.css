@@ -9,7 +9,7 @@ body
 }
 
 /* The Modal (background) */
-#gameModeModal, #multiPlayerModal, #endModal, #singlePLayerModal{  
+#gameModeModal, #multiPlayerModal, #endModal, #singlePlayerModal{  
   position: fixed; /* Stay in place */
   z-index: 1; /* Sit on top */
   padding-top: 180px; /* Location of the box */
@@ -92,7 +92,7 @@ body
 */
 
 .label-div{
-    margin-top: 20px;
+    margin-top: 40px;
 }
 
 .input-div{
@@ -117,6 +117,9 @@ body
     border: none;
 }
 
+#submit-name{
+    margin-top: 40px;
+}
 
 /*
 Main UI containing board,restart button and turn status
@@ -183,4 +186,14 @@ div[data-index='8']{
     cursor: pointer;
     outline: 0;
     border: none;
+}
+
+/*Styling checkbox */
+#opponent{
+    margin-top: 30px;
+    margin-bottom: 10px;
+}
+
+.details-header{
+    font-size: 15px;
 }

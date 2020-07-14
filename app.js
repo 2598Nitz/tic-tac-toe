@@ -11,7 +11,7 @@ const players = (nameVar) =>{
 
 let playerOne = players("p1");
 let playerTwo = players("p2");
-
+let isMultiPlayer = true;
 const gameBoard = (()=>{
 
     let states = [' ',' ',' ',' ',' ',' ',' ',' ',' '];
@@ -69,6 +69,8 @@ const gameBoard = (()=>{
         let endModal = document.querySelector("#endModal");
         endModal.style.display = "block";
 
+        let displayDiv = document.querySelector('#display-turn');
+        displayDiv.innerHTML = "";
     }
 
     function resetEverything(e)
@@ -81,7 +83,7 @@ const gameBoard = (()=>{
             grid.style.backgroundColor = "white";
             grid.removeEventListener('click',markOnBoard);
         }
-
+        
         playerOneTurn = false;
         let displayDiv = document.querySelector('#display-turn');
         displayDiv.innerHTML = "";
@@ -137,6 +139,7 @@ const gameBoard = (()=>{
             grid.innerHTML = states[i];
         }
 
+        
         window.setTimeout(handelModals,800);
 
         let endDisplay = document.querySelector("#end-display");
@@ -169,7 +172,7 @@ const gameBoard = (()=>{
         }
 
         let result = checkGameStatus();
-        console.log(result);
+        //console.log(result);
         if(result[0] === 'inProgress')
         {
             //switch user turn and display it
@@ -194,21 +197,205 @@ const gameBoard = (()=>{
         }
 
     }
+
+    //randomly select an empty grid-element
+    function stupidAI()
+    {
+        for(let i = 0; i < states.length; i++)
+        {
+            if(states[i] === ' ')
+            {
+                let grid = document.querySelector("div[data-index='"+i+"']");
+                grid.innerHTML = 'O';
+                grid.style.color = "blue";
+                states[parseInt(grid.dataset.index)] = 'O';
+                //console.log("computer marked "+i);
+                break;
+            }
+        }
+
+        let result = checkGameStatus();
+        //console.log(result+" "+status);
+        if(result[0] === 'inProgress')
+        {
+            //switch user turn and display it
+            playerOneTurn = !playerOneTurn;
+            //console.log(playerOneTurn);
+            renderUI(false,playerOneTurn);
+        }
+        else if(result[0] === 'win')
+        {
+            //display win for current player
+            //go to game mode option
+            let winner = playerOneTurn?playerOne.name:playerTwo.name;
+            renderWin(result[1],winner);
+            
+        }
+        
+        else
+        {
+            //display draw
+            //game mode option
+            renderDraw();
+
+        }
+    }
+
+    function cleverAI()
+    {
+        let bestMove = minimax(states,true).bestMove;
+        //console.log(bestMove);
+        let grid = document.querySelector("div[data-index='"+bestMove+"']");
+        grid.innerHTML = 'O';
+        grid.style.color = "blue";
+        states[parseInt(grid.dataset.index)] = 'O';
+        //console.log("computer marked "+bestMove);
+        
+        result = checkGameStatus();
+        if(result[0] === 'inProgress')
+        {
+            //switch user turn and display it
+            playerOneTurn = !playerOneTurn;
+            //console.log(playerOneTurn);
+            renderUI(false,playerOneTurn);
+        }
+        else if(result[0] === 'win')
+        {
+            //display win for current player
+            //go to game mode option
+            let winner = playerOneTurn?playerOne.name:playerTwo.name;
+            renderWin(result[1],winner);
+            
+        }
+        
+        else
+        {
+            //display draw
+            //game mode option
+            renderDraw();
+
+        }
+    }
+
+    function minimax(states,isMaximizing)
+    {   
+        //console.log(states);
+        //console.log(isMaximizing);
+
+        let result = checkGameStatus();
+
+        if(result[0] === 'win')
+        {
+            let winner = result[1];
+            if(!isMaximizing)
+            {
+                return {bestScore:1,bestMove:-1};
+            }
+            else 
+            {
+                return {bestScore:-1,bestMove:-1};
+            }
+        }
+        else if(result[0] === 'draw')
+        {
+            return {bestScore:0,bestMove:-1};
+        }
+        else
+        {
+            let bestMoveMax = -1;
+            let bestMoveMin = -1;
+            let bestScoreMax = -2;
+            let bestScoreMin = 2;
+        
+            for(let i = 0; i < states.length; i++)
+            {   
+                if(states[i] === ' ')
+                {
+                    if(isMaximizing)
+                    {
+                        states[i] = 'O';
+                    }
+                    else
+                    {
+                        states[i] = 'X';
+                    }
+
+                    let score = minimax(states, !isMaximizing).bestScore;
+                    states[i] = ' ';
+                    if(isMaximizing)
+                    {
+                        if(score > bestScoreMax)
+                        {
+                            bestScoreMax = score;
+                            bestMoveMax = i;
+                        }
+                    }
+                    else
+                    {
+                        if(score < bestScoreMin)
+                        {
+                            bestScoreMin = score;
+                            bestMoveMin = i;
+                        }
+                    }
+                }
+            }
+
+            if(isMaximizing)
+            return {bestScore: bestScoreMax, bestMove: bestMoveMax};
+
+            else
+            return {bestScore: bestScoreMin,bestMove: bestMoveMin};
+        }
+    }
     const renderUI = (listenToClick = false,pt) =>{
 
         playerOneTurn = pt;
-        
-        for(let i = 0; i < states.length; i++)
+        if(isMultiPlayer)
         {
-            let grid = document.querySelector("div[data-index='"+i+"']");
-            if(listenToClick)
+            
+            
+            for(let i = 0; i < states.length; i++)
             {
-                grid.addEventListener('click',markOnBoard);
+                let grid = document.querySelector("div[data-index='"+i+"']");
+                if(listenToClick)
+                {
+                    grid.addEventListener('click',markOnBoard);
+                }
+                grid.innerHTML = states[i];
             }
-            grid.innerHTML = states[i];
         }
 
-        
+        else
+        {
+            for(let i = 0; i < states.length; i++)
+            {
+                let grid = document.querySelector("div[data-index='"+i+"']");
+                if(playerOneTurn)
+                {
+                    grid.addEventListener('click',markOnBoard);
+                }
+                else    
+                {   
+                    //console.log("removed click event");
+                    grid.removeEventListener('click',markOnBoard);
+                }
+                grid.innerHTML = states[i];
+            }
+
+            if(!playerOneTurn)
+            {   
+                if(playerTwo.name === "Clever AI")
+                {
+                    window.setTimeout(cleverAI,1000);
+                }
+                else
+                {
+                    window.setTimeout(stupidAI,1000);
+                }
+            }
+        }
+
         if(playerOneTurn)
         {
             playerOne.displayTurn();
@@ -238,14 +425,14 @@ const gameControl = (() => {
         let multiPlayerBtn = document.querySelector("#users");
         multiPlayerBtn.addEventListener('click',(e) =>{
 
-            console.log('clicked');
+            //console.log('clicked');
             let gameModeModal = document.querySelector("#gameModeModal");
             gameModeModal.style.display = "none";
 
             let multiPlayerModal = document.querySelector("#multiPlayerModal");
             multiPlayerModal.style.display = "block";
         });
-        /*
+        
         let singlePlayerBtn = document.querySelector('#user');
         singlePlayerBtn.addEventListener('click',(e) =>{
 
@@ -255,12 +442,12 @@ const gameControl = (() => {
             let singlePlayerModal = document.querySelector("#singlePlayerModal");
             singlePlayerModal.style.display = "block";
         });
-        */
+        
         let startGameBtn = document.querySelector("#submit-names");
 
         startGameBtn.addEventListener('click',(e) =>{
 
-            console.log('start game');
+            //console.log('start game');
 
             //fetch player's names
             let p1Div = document.querySelector("#p1");
@@ -285,10 +472,10 @@ const gameControl = (() => {
             multiPlayerModal.style.display = "none";
             
             let listenToClick = true;
-            
+            isMultiPlayer = true;
             gameBoard.renderUI(listenToClick,true);
         });
-        /*
+        
         let startGameBtn2 = document.querySelector("#submit-name");
 
         startGameBtn2.addEventListener('click',(e) =>{
@@ -298,21 +485,29 @@ const gameControl = (() => {
 
             if(p1Div.value === "")
             {
-                p1Name = "";
+                p1Name = "USER";
             }
             
-
             playerOne.name = p1Name;
-            playerTwo.name = p2Name;
 
-            let multiPlayerModal = document.querySelector("#multiPlayerModal");
-            multiPlayerModal.style.display = "none";
+            let stupidAIinput = document.querySelector('#stupidAI');
+
+            if(stupidAIinput.checked)
+            {
+                playerTwo.name = "Stupid AI";
+            }
+            else
+            {
+                playerTwo.name = "Clever AI";
+            }
+            let singlePlayerModal = document.querySelector("#singlePlayerModal");
+            singlePlayerModal.style.display = "none";
             
             let listenToClick = true;
-            
+            isMultiPlayer = false;
             gameBoard.renderUI(listenToClick,true);
         });
-        */
+        
     }
 
     return {gameMode};
